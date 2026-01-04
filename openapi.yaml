@@ -1,0 +1,858 @@
+openapi: 3.0.3
+info:
+  title: Api2spec Fixture Gin API
+  version: 1.0.0
+paths:
+  /brew:
+    get:
+      tags:
+        - brew
+      operationId: getBrew
+      responses:
+        "200":
+          description: Successful response
+        "400":
+          description: Bad request
+        "500":
+          description: Internal server error
+  /brews:
+    get:
+      tags:
+        - brews
+      operationId: getList
+      responses:
+        "200":
+          description: Successful response
+        "400":
+          description: Bad request
+        "500":
+          description: Internal server error
+    post:
+      tags:
+        - brews
+      operationId: postCreate
+      responses:
+        "200":
+          description: Successful response
+        "400":
+          description: Bad request
+        "500":
+          description: Internal server error
+  /brews/{id}:
+    get:
+      tags:
+        - brews
+      operationId: getGet
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Successful response
+        "400":
+          description: Bad request
+        "500":
+          description: Internal server error
+    delete:
+      tags:
+        - brews
+      operationId: deleteDelete
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Successful response
+        "400":
+          description: Bad request
+        "500":
+          description: Internal server error
+    patch:
+      tags:
+        - brews
+      operationId: patchPatch
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Successful response
+        "400":
+          description: Bad request
+        "500":
+          description: Internal server error
+  /brews/{id}/steeps:
+    get:
+      tags:
+        - brews
+      operationId: getListSteeps
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Successful response
+        "400":
+          description: Bad request
+        "500":
+          description: Internal server error
+    post:
+      tags:
+        - brews
+      operationId: postCreateSteep
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Successful response
+        "400":
+          description: Bad request
+        "500":
+          description: Internal server error
+  /health:
+    get:
+      tags:
+        - health
+      operationId: getHealth
+      responses:
+        "200":
+          description: Successful response
+        "400":
+          description: Bad request
+        "500":
+          description: Internal server error
+  /health/live:
+    get:
+      tags:
+        - health
+      operationId: getLive
+      responses:
+        "200":
+          description: Successful response
+        "400":
+          description: Bad request
+        "500":
+          description: Internal server error
+  /health/ready:
+    get:
+      tags:
+        - health
+      operationId: getReady
+      responses:
+        "200":
+          description: Successful response
+        "400":
+          description: Bad request
+        "500":
+          description: Internal server error
+  /teapots:
+    get:
+      tags:
+        - teapots
+      operationId: getList
+      responses:
+        "200":
+          description: Successful response
+        "400":
+          description: Bad request
+        "500":
+          description: Internal server error
+    post:
+      tags:
+        - teapots
+      operationId: postCreate
+      responses:
+        "200":
+          description: Successful response
+        "400":
+          description: Bad request
+        "500":
+          description: Internal server error
+  /teapots/{id}:
+    get:
+      tags:
+        - teapots
+      operationId: getGet
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Successful response
+        "400":
+          description: Bad request
+        "500":
+          description: Internal server error
+    put:
+      tags:
+        - teapots
+      operationId: putUpdate
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Successful response
+        "400":
+          description: Bad request
+        "500":
+          description: Internal server error
+    delete:
+      tags:
+        - teapots
+      operationId: deleteDelete
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Successful response
+        "400":
+          description: Bad request
+        "500":
+          description: Internal server error
+    patch:
+      tags:
+        - teapots
+      operationId: patchPatch
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Successful response
+        "400":
+          description: Bad request
+        "500":
+          description: Internal server error
+  /teapots/{id}/brews:
+    get:
+      tags:
+        - teapots
+      operationId: getListByTeapot
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Successful response
+        "400":
+          description: Bad request
+        "500":
+          description: Internal server error
+  /teas:
+    get:
+      tags:
+        - teas
+      operationId: getList
+      responses:
+        "200":
+          description: Successful response
+        "400":
+          description: Bad request
+        "500":
+          description: Internal server error
+    post:
+      tags:
+        - teas
+      operationId: postCreate
+      responses:
+        "200":
+          description: Successful response
+        "400":
+          description: Bad request
+        "500":
+          description: Internal server error
+  /teas/{id}:
+    get:
+      tags:
+        - teas
+      operationId: getGet
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Successful response
+        "400":
+          description: Bad request
+        "500":
+          description: Internal server error
+    put:
+      tags:
+        - teas
+      operationId: putUpdate
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Successful response
+        "400":
+          description: Bad request
+        "500":
+          description: Internal server error
+    delete:
+      tags:
+        - teas
+      operationId: deleteDelete
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Successful response
+        "400":
+          description: Bad request
+        "500":
+          description: Internal server error
+    patch:
+      tags:
+        - teas
+      operationId: patchPatch
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Successful response
+        "400":
+          description: Bad request
+        "500":
+          description: Internal server error
+components:
+  schemas:
+    Brew:
+      type: object
+      title: Brew
+      description: |-
+        Brew represents a brewing session
+        @Description Brew session entity
+      properties:
+        completedAt:
+          type: string
+          format: date-time
+          nullable: true
+        createdAt:
+          type: string
+          format: date-time
+        id:
+          type: string
+        notes:
+          type: string
+          nullable: true
+        startedAt:
+          type: string
+          format: date-time
+        status:
+          $ref: '#/components/schemas/BrewStatus'
+        teaId:
+          type: string
+        teapotId:
+          type: string
+        updatedAt:
+          type: string
+          format: date-time
+        waterTempCelsius:
+          type: integer
+    BrewListResponse:
+      type: object
+      title: BrewListResponse
+      description: |-
+        BrewListResponse represents a paginated list of brews
+        @Description Paginated brew list response
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Brew'
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+    BrewQuery:
+      type: object
+      title: BrewQuery
+      description: |-
+        BrewQuery represents query parameters for listing brews
+        @Description Brew list query parameters
+      properties:
+        Status:
+          $ref: '#/components/schemas/BrewStatus'
+        TeaID:
+          type: string
+          nullable: true
+        TeapotID:
+          type: string
+          nullable: true
+    BrewWithDetails:
+      type: object
+      title: BrewWithDetails
+      description: |-
+        BrewWithDetails includes the related teapot and tea
+        @Description Brew session with related entities
+      properties:
+        tea:
+          $ref: '#/components/schemas/Tea'
+        teapot:
+          $ref: '#/components/schemas/Teapot'
+    CreateBrewRequest:
+      type: object
+      title: CreateBrewRequest
+      description: |-
+        CreateBrewRequest represents the request body for creating a brew
+        @Description Create brew request
+      properties:
+        notes:
+          type: string
+          nullable: true
+        teaId:
+          type: string
+        teapotId:
+          type: string
+        waterTempCelsius:
+          type: integer
+          nullable: true
+    CreateSteepRequest:
+      type: object
+      title: CreateSteepRequest
+      description: |-
+        CreateSteepRequest represents the request body for creating a steep
+        @Description Create steep request
+      properties:
+        durationSeconds:
+          type: integer
+        notes:
+          type: string
+          nullable: true
+        rating:
+          type: integer
+          nullable: true
+    CreateTeaRequest:
+      type: object
+      title: CreateTeaRequest
+      description: |-
+        CreateTeaRequest represents the request body for creating a tea
+        @Description Create tea request
+      properties:
+        caffeineLevel:
+          $ref: '#/components/schemas/CaffeineLevel'
+        description:
+          type: string
+          nullable: true
+        name:
+          type: string
+        origin:
+          type: string
+          nullable: true
+        steepTempCelsius:
+          type: integer
+        steepTimeSeconds:
+          type: integer
+        type:
+          $ref: '#/components/schemas/TeaType'
+    CreateTeapotRequest:
+      type: object
+      title: CreateTeapotRequest
+      description: |-
+        CreateTeapotRequest represents the request body for creating a teapot
+        @Description Create teapot request
+      properties:
+        capacityMl:
+          type: integer
+        description:
+          type: string
+          nullable: true
+        material:
+          $ref: '#/components/schemas/TeapotMaterial'
+        name:
+          type: string
+        style:
+          $ref: '#/components/schemas/TeapotStyle'
+    Error:
+      type: object
+      title: Error
+      description: |-
+        Error represents an API error response
+        @Description API error response
+      properties:
+        code:
+          type: string
+        details:
+          type: object
+          additionalProperties:
+            type: string
+        message:
+          type: string
+    HealthCheck:
+      type: object
+      title: HealthCheck
+      description: |-
+        HealthCheck represents a single health check result
+        @Description Health check result
+      properties:
+        latencyMs:
+          type: integer
+          nullable: true
+        message:
+          type: string
+          nullable: true
+        name:
+          type: string
+        status:
+          type: string
+    HealthResponse:
+      type: object
+      title: HealthResponse
+      description: |-
+        HealthResponse represents the health endpoint response
+        @Description Health check response
+      properties:
+        checks:
+          type: array
+          items:
+            $ref: '#/components/schemas/HealthCheck'
+        status:
+          type: string
+        timestamp:
+          type: string
+          format: date-time
+        version:
+          type: string
+          nullable: true
+    PaginatedResponse:
+      type: object
+      title: PaginatedResponse
+      description: PaginatedResponse is a generic paginated response wrapper
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/T'
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+    Pagination:
+      type: object
+      title: Pagination
+      description: |-
+        Pagination represents pagination metadata in responses
+        @Description Pagination metadata
+      properties:
+        limit:
+          type: integer
+        page:
+          type: integer
+        total:
+          type: integer
+        totalPages:
+          type: integer
+    PaginationQuery:
+      type: object
+      title: PaginationQuery
+      description: |-
+        PaginationQuery represents pagination query parameters
+        @Description Pagination query parameters
+      properties:
+        Limit:
+          type: integer
+        Page:
+          type: integer
+    PatchBrewRequest:
+      type: object
+      title: PatchBrewRequest
+      description: |-
+        PatchBrewRequest represents the request body for PATCH
+        @Description Patch brew request
+      properties:
+        completedAt:
+          type: string
+          format: date-time
+          nullable: true
+        notes:
+          type: string
+          nullable: true
+        status:
+          $ref: '#/components/schemas/BrewStatus'
+    PatchTeaRequest:
+      type: object
+      title: PatchTeaRequest
+      description: |-
+        PatchTeaRequest represents the request body for PATCH (partial update)
+        @Description Patch tea request (partial update)
+      properties:
+        caffeineLevel:
+          $ref: '#/components/schemas/CaffeineLevel'
+        description:
+          type: string
+          nullable: true
+        name:
+          type: string
+          nullable: true
+        origin:
+          type: string
+          nullable: true
+        steepTempCelsius:
+          type: integer
+          nullable: true
+        steepTimeSeconds:
+          type: integer
+          nullable: true
+        type:
+          $ref: '#/components/schemas/TeaType'
+    PatchTeapotRequest:
+      type: object
+      title: PatchTeapotRequest
+      description: |-
+        PatchTeapotRequest represents the request body for PATCH (partial update)
+        @Description Patch teapot request (partial update)
+      properties:
+        capacityMl:
+          type: integer
+          nullable: true
+        description:
+          type: string
+          nullable: true
+        material:
+          $ref: '#/components/schemas/TeapotMaterial'
+        name:
+          type: string
+          nullable: true
+        style:
+          $ref: '#/components/schemas/TeapotStyle'
+    Steep:
+      type: object
+      title: Steep
+      description: |-
+        Steep represents a single steeping cycle within a brew
+        @Description Steep cycle entity
+      properties:
+        brewId:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+        durationSeconds:
+          type: integer
+        id:
+          type: string
+        notes:
+          type: string
+          nullable: true
+        rating:
+          type: integer
+          nullable: true
+        steepNumber:
+          type: integer
+    SteepListResponse:
+      type: object
+      title: SteepListResponse
+      description: |-
+        SteepListResponse represents a paginated list of steeps
+        @Description Paginated steep list response
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Steep'
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+    Tea:
+      type: object
+      title: Tea
+      description: |-
+        Tea represents a tea entity
+        @Description Tea entity
+      properties:
+        caffeineLevel:
+          $ref: '#/components/schemas/CaffeineLevel'
+        createdAt:
+          type: string
+          format: date-time
+        description:
+          type: string
+          nullable: true
+        id:
+          type: string
+        name:
+          type: string
+        origin:
+          type: string
+          nullable: true
+        steepTempCelsius:
+          type: integer
+        steepTimeSeconds:
+          type: integer
+        type:
+          $ref: '#/components/schemas/TeaType'
+        updatedAt:
+          type: string
+          format: date-time
+    TeaListResponse:
+      type: object
+      title: TeaListResponse
+      description: |-
+        TeaListResponse represents a paginated list of teas
+        @Description Paginated tea list response
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Tea'
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+    TeaQuery:
+      type: object
+      title: TeaQuery
+      description: |-
+        TeaQuery represents query parameters for listing teas
+        @Description Tea list query parameters
+      properties:
+        CaffeineLevel:
+          $ref: '#/components/schemas/CaffeineLevel'
+        Type:
+          $ref: '#/components/schemas/TeaType'
+    Teapot:
+      type: object
+      title: Teapot
+      description: |-
+        Teapot represents a teapot entity
+        @Description Teapot entity
+      properties:
+        capacityMl:
+          type: integer
+        createdAt:
+          type: string
+          format: date-time
+        description:
+          type: string
+          nullable: true
+        id:
+          type: string
+        material:
+          $ref: '#/components/schemas/TeapotMaterial'
+        name:
+          type: string
+        style:
+          $ref: '#/components/schemas/TeapotStyle'
+        updatedAt:
+          type: string
+          format: date-time
+    TeapotListResponse:
+      type: object
+      title: TeapotListResponse
+      description: |-
+        TeapotListResponse represents a paginated list of teapots
+        @Description Paginated teapot list response
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Teapot'
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+    TeapotQuery:
+      type: object
+      title: TeapotQuery
+      description: |-
+        TeapotQuery represents query parameters for listing teapots
+        @Description Teapot list query parameters
+      properties:
+        Material:
+          $ref: '#/components/schemas/TeapotMaterial'
+        Style:
+          $ref: '#/components/schemas/TeapotStyle'
+    TeapotResponse:
+      type: object
+      title: TeapotResponse
+      description: |-
+        TeapotResponse represents the TIF 418 response
+        @Description TIF 418 I'm a teapot response
+      properties:
+        error:
+          type: string
+        message:
+          type: string
+        spec:
+          type: string
+    UpdateTeaRequest:
+      type: object
+      title: UpdateTeaRequest
+      description: |-
+        UpdateTeaRequest represents the request body for PUT (full replacement)
+        @Description Update tea request (full replacement)
+      properties:
+        caffeineLevel:
+          $ref: '#/components/schemas/CaffeineLevel'
+        description:
+          type: string
+          nullable: true
+        name:
+          type: string
+        origin:
+          type: string
+          nullable: true
+        steepTempCelsius:
+          type: integer
+        steepTimeSeconds:
+          type: integer
+        type:
+          $ref: '#/components/schemas/TeaType'
+    UpdateTeapotRequest:
+      type: object
+      title: UpdateTeapotRequest
+      description: |-
+        UpdateTeapotRequest represents the request body for PUT (full replacement)
+        @Description Update teapot request (full replacement)
+      properties:
+        capacityMl:
+          type: integer
+        description:
+          type: string
+          nullable: true
+        material:
+          $ref: '#/components/schemas/TeapotMaterial'
+        name:
+          type: string
+        style:
+          $ref: '#/components/schemas/TeapotStyle'
