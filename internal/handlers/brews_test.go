@@ -17,7 +17,8 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func setupBrewRouter(s *store.MemoryStore) *gin.Engine {
+func setupBrewRouter(t *testing.T, s *store.MemoryStore) *gin.Engine {
+	t.Helper()
 	gin.SetMode(gin.TestMode)
 	router := gin.New()
 	handler := handlers.NewBrewHandler(s)
@@ -29,7 +30,8 @@ func setupBrewRouter(s *store.MemoryStore) *gin.Engine {
 	return router
 }
 
-func setupBrewSteepRouter(s *store.MemoryStore) *gin.Engine {
+func setupBrewSteepRouter(t *testing.T, s *store.MemoryStore) *gin.Engine {
+	t.Helper()
 	gin.SetMode(gin.TestMode)
 	router := gin.New()
 	handler := handlers.NewBrewHandler(s)
@@ -38,7 +40,8 @@ func setupBrewSteepRouter(s *store.MemoryStore) *gin.Engine {
 	return router
 }
 
-func setupTeapotBrewRouter(s *store.MemoryStore) *gin.Engine {
+func setupTeapotBrewRouter(t *testing.T, s *store.MemoryStore) *gin.Engine {
+	t.Helper()
 	gin.SetMode(gin.TestMode)
 	router := gin.New()
 	handler := handlers.NewBrewHandler(s)
@@ -46,7 +49,8 @@ func setupTeapotBrewRouter(s *store.MemoryStore) *gin.Engine {
 	return router
 }
 
-func createTestTeapot(s *store.MemoryStore) string {
+func createTestTeapot(t *testing.T, s *store.MemoryStore) string {
+	t.Helper()
 	id := uuid.New().String()
 	s.CreateTeapot(models.Teapot{
 		ID:         id,
@@ -60,7 +64,8 @@ func createTestTeapot(s *store.MemoryStore) string {
 	return id
 }
 
-func createTestTea(s *store.MemoryStore) string {
+func createTestTea(t *testing.T, s *store.MemoryStore) string {
+	t.Helper()
 	id := uuid.New().String()
 	s.CreateTea(models.Tea{
 		ID:               id,
@@ -75,26 +80,35 @@ func createTestTea(s *store.MemoryStore) string {
 	return id
 }
 
+func assertErrorResponse(t *testing.T, w *httptest.ResponseRecorder) {
+	t.Helper()
+	var errResp models.Error
+	err := json.Unmarshal(w.Body.Bytes(), &errResp)
+	require.NoError(t, err)
+	assert.NotEmpty(t, errResp.Code)
+	assert.NotEmpty(t, errResp.Message)
+}
+
 func TestBrewHandler_List(t *testing.T) {
 	tests := []struct {
 		name           string
-		setupStore     func(*store.MemoryStore)
+		setupStore     func(*testing.T, *store.MemoryStore)
 		queryParams    string
 		expectedStatus int
 		expectedTotal  int
 	}{
 		{
 			name:           "empty list",
-			setupStore:     func(s *store.MemoryStore) {},
+			setupStore:     func(t *testing.T, s *store.MemoryStore) {},
 			queryParams:    "",
 			expectedStatus: http.StatusOK,
 			expectedTotal:  0,
 		},
 		{
 			name: "list with items",
-			setupStore: func(s *store.MemoryStore) {
-				teapotID := createTestTeapot(s)
-				teaID := createTestTea(s)
+			setupStore: func(t *testing.T, s *store.MemoryStore) {
+				teapotID := createTestTeapot(t, s)
+				teaID := createTestTea(t, s)
 				s.CreateBrew(models.Brew{
 					ID:               uuid.New().String(),
 					TeapotID:         teapotID,
@@ -112,9 +126,9 @@ func TestBrewHandler_List(t *testing.T) {
 		},
 		{
 			name: "filter by status",
-			setupStore: func(s *store.MemoryStore) {
-				teapotID := createTestTeapot(s)
-				teaID := createTestTea(s)
+			setupStore: func(t *testing.T, s *store.MemoryStore) {
+				teapotID := createTestTeapot(t, s)
+				teaID := createTestTea(t, s)
 				s.CreateBrew(models.Brew{
 					ID:               uuid.New().String(),
 					TeapotID:         teapotID,
@@ -143,10 +157,11 @@ func TestBrewHandler_List(t *testing.T) {
 	}
 
 	for _, tt := range tests {
+		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			s := store.NewMemoryStore()
-			tt.setupStore(s)
-			router := setupBrewRouter(s)
+			tt.setupStore(t, s)
+			router := setupBrewRouter(t, s)
 
 			req := httptest.NewRequest(http.MethodGet, "/brews"+tt.queryParams, nil)
 			w := httptest.NewRecorder()
@@ -168,15 +183,15 @@ func TestBrewHandler_List(t *testing.T) {
 func TestBrewHandler_Create(t *testing.T) {
 	tests := []struct {
 		name           string
-		setupStore     func(*store.MemoryStore) (string, string)
+		setupStore     func(*testing.T, *store.MemoryStore) (string, string)
 		body           func(string, string) interface{}
 		expectedStatus int
 	}{
 		{
 			name: "valid brew",
-			setupStore: func(s *store.MemoryStore) (string, string) {
-				teapotID := createTestTeapot(s)
-				teaID := createTestTea(s)
+			setupStore: func(t *testing.T, s *store.MemoryStore) (string, string) {
+				teapotID := createTestTeapot(t, s)
+				teaID := createTestTea(t, s)
 				return teapotID, teaID
 			},
 			body: func(teapotID, teaID string) interface{} {
@@ -190,9 +205,9 @@ func TestBrewHandler_Create(t *testing.T) {
 		},
 		{
 			name: "valid brew without temp (uses tea default)",
-			setupStore: func(s *store.MemoryStore) (string, string) {
-				teapotID := createTestTeapot(s)
-				teaID := createTestTea(s)
+			setupStore: func(t *testing.T, s *store.MemoryStore) (string, string) {
+				teapotID := createTestTeapot(t, s)
+				teaID := createTestTea(t, s)
 				return teapotID, teaID
 			},
 			body: func(teapotID, teaID string) interface{} {
@@ -205,8 +220,8 @@ func TestBrewHandler_Create(t *testing.T) {
 		},
 		{
 			name: "non-existent teapot",
-			setupStore: func(s *store.MemoryStore) (string, string) {
-				teaID := createTestTea(s)
+			setupStore: func(t *testing.T, s *store.MemoryStore) (string, string) {
+				teaID := createTestTea(t, s)
 				return uuid.New().String(), teaID
 			},
 			body: func(teapotID, teaID string) interface{} {
@@ -219,8 +234,8 @@ func TestBrewHandler_Create(t *testing.T) {
 		},
 		{
 			name: "non-existent tea",
-			setupStore: func(s *store.MemoryStore) (string, string) {
-				teapotID := createTestTeapot(s)
+			setupStore: func(t *testing.T, s *store.MemoryStore) (string, string) {
+				teapotID := createTestTeapot(t, s)
 				return teapotID, uuid.New().String()
 			},
 			body: func(teapotID, teaID string) interface{} {
@@ -233,8 +248,8 @@ func TestBrewHandler_Create(t *testing.T) {
 		},
 		{
 			name: "invalid teapot UUID",
-			setupStore: func(s *store.MemoryStore) (string, string) {
-				teaID := createTestTea(s)
+			setupStore: func(t *testing.T, s *store.MemoryStore) (string, string) {
+				teaID := createTestTea(t, s)
 				return "not-a-uuid", teaID
 			},
 			body: func(teapotID, teaID string) interface{} {
@@ -245,16 +260,32 @@ func TestBrewHandler_Create(t *testing.T) {
 			},
 			expectedStatus: http.StatusBadRequest,
 		},
+		{
+			name: "malformed JSON body",
+			setupStore: func(t *testing.T, s *store.MemoryStore) (string, string) {
+				return "", ""
+			},
+			body: func(teapotID, teaID string) interface{} {
+				return nil
+			},
+			expectedStatus: http.StatusBadRequest,
+		},
 	}
 
 	for _, tt := range tests {
+		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			s := store.NewMemoryStore()
-			teapotID, teaID := tt.setupStore(s)
-			router := setupBrewRouter(s)
+			teapotID, teaID := tt.setupStore(t, s)
+			router := setupBrewRouter(t, s)
 
-			body, _ := json.Marshal(tt.body(teapotID, teaID))
-			req := httptest.NewRequest(http.MethodPost, "/brews", bytes.NewReader(body))
+			var req *http.Request
+			if tt.name == "malformed JSON body" {
+				req = httptest.NewRequest(http.MethodPost, "/brews", bytes.NewReader([]byte("{invalid json")))
+			} else {
+				body, _ := json.Marshal(tt.body(teapotID, teaID))
+				req = httptest.NewRequest(http.MethodPost, "/brews", bytes.NewReader(body))
+			}
 			req.Header.Set("Content-Type", "application/json")
 			w := httptest.NewRecorder()
 
@@ -269,6 +300,8 @@ func TestBrewHandler_Create(t *testing.T) {
 				assert.NotEmpty(t, response.ID)
 				assert.Equal(t, models.BrewPreparing, response.Status)
 				assert.False(t, response.CreatedAt.IsZero())
+			} else if tt.expectedStatus == http.StatusBadRequest {
+				assertErrorResponse(t, w)
 			}
 		})
 	}
@@ -277,15 +310,15 @@ func TestBrewHandler_Create(t *testing.T) {
 func TestBrewHandler_Get(t *testing.T) {
 	tests := []struct {
 		name           string
-		setupStore     func(*store.MemoryStore) string
+		setupStore     func(*testing.T, *store.MemoryStore) string
 		getID          func(string) string
 		expectedStatus int
 	}{
 		{
 			name: "existing brew",
-			setupStore: func(s *store.MemoryStore) string {
-				teapotID := createTestTeapot(s)
-				teaID := createTestTea(s)
+			setupStore: func(t *testing.T, s *store.MemoryStore) string {
+				teapotID := createTestTeapot(t, s)
+				teaID := createTestTea(t, s)
 				id := uuid.New().String()
 				s.CreateBrew(models.Brew{
 					ID:               id,
@@ -304,7 +337,7 @@ func TestBrewHandler_Get(t *testing.T) {
 		},
 		{
 			name: "non-existent brew",
-			setupStore: func(s *store.MemoryStore) string {
+			setupStore: func(t *testing.T, s *store.MemoryStore) string {
 				return uuid.New().String()
 			},
 			getID:          func(id string) string { return id },
@@ -312,7 +345,7 @@ func TestBrewHandler_Get(t *testing.T) {
 		},
 		{
 			name: "invalid UUID",
-			setupStore: func(s *store.MemoryStore) string {
+			setupStore: func(t *testing.T, s *store.MemoryStore) string {
 				return ""
 			},
 			getID:          func(id string) string { return "not-a-uuid" },
@@ -323,8 +356,8 @@ func TestBrewHandler_Get(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			s := store.NewMemoryStore()
-			id := tt.setupStore(s)
-			router := setupBrewRouter(s)
+			id := tt.setupStore(t, s)
+			router := setupBrewRouter(t, s)
 
 			req := httptest.NewRequest(http.MethodGet, "/brews/"+tt.getID(id), nil)
 			w := httptest.NewRecorder()
@@ -339,7 +372,7 @@ func TestBrewHandler_Get(t *testing.T) {
 func TestBrewHandler_Patch(t *testing.T) {
 	tests := []struct {
 		name           string
-		setupStore     func(*store.MemoryStore) string
+		setupStore     func(*testing.T, *store.MemoryStore) string
 		getID          func(string) string
 		body           interface{}
 		expectedStatus int
@@ -347,9 +380,9 @@ func TestBrewHandler_Patch(t *testing.T) {
 	}{
 		{
 			name: "patch status",
-			setupStore: func(s *store.MemoryStore) string {
-				teapotID := createTestTeapot(s)
-				teaID := createTestTea(s)
+			setupStore: func(t *testing.T, s *store.MemoryStore) string {
+				teapotID := createTestTeapot(t, s)
+				teaID := createTestTea(t, s)
 				id := uuid.New().String()
 				s.CreateBrew(models.Brew{
 					ID:               id,
@@ -377,7 +410,7 @@ func TestBrewHandler_Patch(t *testing.T) {
 		},
 		{
 			name: "non-existent brew",
-			setupStore: func(s *store.MemoryStore) string {
+			setupStore: func(t *testing.T, s *store.MemoryStore) string {
 				return uuid.New().String()
 			},
 			getID: func(id string) string { return id },
@@ -386,13 +419,24 @@ func TestBrewHandler_Patch(t *testing.T) {
 			},
 			expectedStatus: http.StatusNotFound,
 		},
+		{
+			name: "invalid UUID",
+			setupStore: func(t *testing.T, s *store.MemoryStore) string {
+				return ""
+			},
+			getID: func(id string) string { return "not-a-uuid" },
+			body: map[string]interface{}{
+				"status": "steeping",
+			},
+			expectedStatus: http.StatusBadRequest,
+		},
 	}
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			s := store.NewMemoryStore()
-			id := tt.setupStore(s)
-			router := setupBrewRouter(s)
+			id := tt.setupStore(t, s)
+			router := setupBrewRouter(t, s)
 
 			body, _ := json.Marshal(tt.body)
 			req := httptest.NewRequest(http.MethodPatch, "/brews/"+tt.getID(id), bytes.NewReader(body))
@@ -413,15 +457,15 @@ func TestBrewHandler_Patch(t *testing.T) {
 func TestBrewHandler_Delete(t *testing.T) {
 	tests := []struct {
 		name           string
-		setupStore     func(*store.MemoryStore) string
+		setupStore     func(*testing.T, *store.MemoryStore) string
 		getID          func(string) string
 		expectedStatus int
 	}{
 		{
 			name: "delete existing brew",
-			setupStore: func(s *store.MemoryStore) string {
-				teapotID := createTestTeapot(s)
-				teaID := createTestTea(s)
+			setupStore: func(t *testing.T, s *store.MemoryStore) string {
+				teapotID := createTestTeapot(t, s)
+				teaID := createTestTea(t, s)
 				id := uuid.New().String()
 				s.CreateBrew(models.Brew{
 					ID:               id,
@@ -440,7 +484,7 @@ func TestBrewHandler_Delete(t *testing.T) {
 		},
 		{
 			name: "delete non-existent brew",
-			setupStore: func(s *store.MemoryStore) string {
+			setupStore: func(t *testing.T, s *store.MemoryStore) string {
 				return uuid.New().String()
 			},
 			getID:          func(id string) string { return id },
@@ -451,8 +495,8 @@ func TestBrewHandler_Delete(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			s := store.NewMemoryStore()
-			id := tt.setupStore(s)
-			router := setupBrewRouter(s)
+			id := tt.setupStore(t, s)
+			router := setupBrewRouter(t, s)
 
 			req := httptest.NewRequest(http.MethodDelete, "/brews/"+tt.getID(id), nil)
 			w := httptest.NewRecorder()
@@ -467,16 +511,16 @@ func TestBrewHandler_Delete(t *testing.T) {
 func TestBrewHandler_ListByTeapot(t *testing.T) {
 	tests := []struct {
 		name           string
-		setupStore     func(*store.MemoryStore) string
+		setupStore     func(*testing.T, *store.MemoryStore) string
 		getID          func(string) string
 		expectedStatus int
 		expectedTotal  int
 	}{
 		{
 			name: "list brews for teapot",
-			setupStore: func(s *store.MemoryStore) string {
-				teapotID := createTestTeapot(s)
-				teaID := createTestTea(s)
+			setupStore: func(t *testing.T, s *store.MemoryStore) string {
+				teapotID := createTestTeapot(t, s)
+				teaID := createTestTea(t, s)
 				s.CreateBrew(models.Brew{
 					ID:               uuid.New().String(),
 					TeapotID:         teapotID,
@@ -495,7 +539,7 @@ func TestBrewHandler_ListByTeapot(t *testing.T) {
 		},
 		{
 			name: "non-existent teapot",
-			setupStore: func(s *store.MemoryStore) string {
+			setupStore: func(t *testing.T, s *store.MemoryStore) string {
 				return uuid.New().String()
 			},
 			getID:          func(id string) string { return id },
@@ -506,8 +550,8 @@ func TestBrewHandler_ListByTeapot(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			s := store.NewMemoryStore()
-			id := tt.setupStore(s)
-			router := setupTeapotBrewRouter(s)
+			id := tt.setupStore(t, s)
+			router := setupTeapotBrewRouter(t, s)
 
 			req := httptest.NewRequest(http.MethodGet, "/teapots/"+tt.getID(id)+"/brews", nil)
 			w := httptest.NewRecorder()
@@ -529,16 +573,16 @@ func TestBrewHandler_ListByTeapot(t *testing.T) {
 func TestBrewHandler_ListSteeps(t *testing.T) {
 	tests := []struct {
 		name           string
-		setupStore     func(*store.MemoryStore) string
+		setupStore     func(*testing.T, *store.MemoryStore) string
 		getID          func(string) string
 		expectedStatus int
 		expectedTotal  int
 	}{
 		{
 			name: "list steeps for brew",
-			setupStore: func(s *store.MemoryStore) string {
-				teapotID := createTestTeapot(s)
-				teaID := createTestTea(s)
+			setupStore: func(t *testing.T, s *store.MemoryStore) string {
+				teapotID := createTestTeapot(t, s)
+				teaID := createTestTea(t, s)
 				brewID := uuid.New().String()
 				s.CreateBrew(models.Brew{
 					ID:               brewID,
@@ -565,7 +609,7 @@ func TestBrewHandler_ListSteeps(t *testing.T) {
 		},
 		{
 			name: "non-existent brew",
-			setupStore: func(s *store.MemoryStore) string {
+			setupStore: func(t *testing.T, s *store.MemoryStore) string {
 				return uuid.New().String()
 			},
 			getID:          func(id string) string { return id },
@@ -576,8 +620,8 @@ func TestBrewHandler_ListSteeps(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			s := store.NewMemoryStore()
-			id := tt.setupStore(s)
-			router := setupBrewSteepRouter(s)
+			id := tt.setupStore(t, s)
+			router := setupBrewSteepRouter(t, s)
 
 			req := httptest.NewRequest(http.MethodGet, "/brews/"+tt.getID(id)+"/steeps", nil)
 			w := httptest.NewRecorder()
@@ -599,16 +643,16 @@ func TestBrewHandler_ListSteeps(t *testing.T) {
 func TestBrewHandler_CreateSteep(t *testing.T) {
 	tests := []struct {
 		name           string
-		setupStore     func(*store.MemoryStore) string
+		setupStore     func(*testing.T, *store.MemoryStore) string
 		getID          func(string) string
 		body           interface{}
 		expectedStatus int
 	}{
 		{
 			name: "valid steep",
-			setupStore: func(s *store.MemoryStore) string {
-				teapotID := createTestTeapot(s)
-				teaID := createTestTea(s)
+			setupStore: func(t *testing.T, s *store.MemoryStore) string {
+				teapotID := createTestTeapot(t, s)
+				teaID := createTestTea(t, s)
 				brewID := uuid.New().String()
 				s.CreateBrew(models.Brew{
 					ID:               brewID,
@@ -631,7 +675,7 @@ func TestBrewHandler_CreateSteep(t *testing.T) {
 		},
 		{
 			name: "non-existent brew",
-			setupStore: func(s *store.MemoryStore) string {
+			setupStore: func(t *testing.T, s *store.MemoryStore) string {
 				return uuid.New().String()
 			},
 			getID: func(id string) string { return id },
@@ -642,9 +686,9 @@ func TestBrewHandler_CreateSteep(t *testing.T) {
 		},
 		{
 			name: "missing duration",
-			setupStore: func(s *store.MemoryStore) string {
-				teapotID := createTestTeapot(s)
-				teaID := createTestTea(s)
+			setupStore: func(t *testing.T, s *store.MemoryStore) string {
+				teapotID := createTestTeapot(t, s)
+				teaID := createTestTea(t, s)
 				brewID := uuid.New().String()
 				s.CreateBrew(models.Brew{
 					ID:               brewID,
@@ -667,8 +711,8 @@ func TestBrewHandler_CreateSteep(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			s := store.NewMemoryStore()
-			id := tt.setupStore(s)
-			router := setupBrewSteepRouter(s)
+			id := tt.setupStore(t, s)
+			router := setupBrewSteepRouter(t, s)
 
 			body, _ := json.Marshal(tt.body)
 			req := httptest.NewRequest(http.MethodPost, "/brews/"+tt.getID(id)+"/steeps", bytes.NewReader(body))
