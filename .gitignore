@@ -1,4 +1,5 @@
 # Binaries
+api2spec-fixture-gin
 bin/
 *.exe
 *.exe~
