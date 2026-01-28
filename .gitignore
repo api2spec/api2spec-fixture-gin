@@ -17,6 +17,9 @@ coverage.html
 go.work
 go.work.sum
 
+# Vendor (if not using go modules properly)
+vendor/
+
 # IDE
 .idea/
 .vscode/
@@ -40,6 +43,9 @@ __debug_bin*
 # Temporary
 tmp/
 temp/
+
+# Logs
+*.log
 
 # Claude Code
 .claude/
